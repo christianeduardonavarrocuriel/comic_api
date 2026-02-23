@@ -6,6 +6,8 @@ Comic API es una aplicación web desarrollada con Flask que permite buscar y exp
 
 El objetivo del proyecto es integrar varias APIs en una misma interfaz sencilla, practicar consumo de servicios externos desde Python y ofrecer una experiencia de consulta rápida y visual para fans de los cómics.
 
+[Ver video de Generado por Google AI Studio, Google Flow y voz de ElevenLabs](Comic_Movies.mp4)
+
 ## ¿Qué hace la aplicación?
 
 - Permite buscar personajes, cómics y películas a partir de un nombre o término de búsqueda.
