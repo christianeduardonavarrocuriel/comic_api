@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ item.name }} - Comic Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦸‍♂️</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #ffffff; color: #1f2937; font-family: 'Inter', sans-serif; }
+        .comic-title { font-family: 'Bangers', cursive; letter-spacing: 2px; text-shadow: 2px 2px 0px #9CA3AF; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+    <header class="py-6 bg-white shadow">
+        <div class="max-w-5xl mx-auto px-4">
+            <a href="/" class="text-gray-700 hover:underline">← Volver</a>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3">
+                <div class="md:col-span-1 p-4">
+                    {% if item.image and item.image.super_url %}
+                    <img src="{{ item.image.super_url }}" alt="{{ item.name }}" class="w-full max-h-96 object-contain rounded-lg">
+                    {% endif %}
+                </div>
+                <div class="md:col-span-2 p-6">
+                    <h1 class="text-3xl comic-title text-gray-900 mb-2">{{ item.name }}</h1>
+                    {% if resource_type == 'character' and item.real_name %}
+                    <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-bold border border-gray-300 inline-block mb-4">
+                        ID REAL: {{ item.real_name }}
+                    </span>
+                    {% endif %}
+                    {% if item.deck %}
+                    <p class="text-gray-700 mb-4">{{ item.deck|safe }}</p>
+                    {% endif %}
+
+                    {% if item.description %}
+                    <div class="prose max-w-none">
+                        {{ item.description|safe }}
+                    </div>
+                    {% endif %}
+
+                    {% if resource_type == 'character' %}
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Apariciones destacadas</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                            {% if item.issue_credits %}
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2">Issues</div>
+                                <div class="flex flex-wrap gap-2">
+                                    {% for it in item.issue_credits[:6] %}
+                                    <a href="/detail/issue/{{ it.id }}" class="inline-flex items-center px-3 py-1 rounded-md bg-gray-200 text-gray-800 text-sm hover:bg-gray-300">{{ it.name or 'Issue' }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if item.volume_credits %}
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2">Volúmenes</div>
+                                <div class="flex flex-wrap gap-2">
+                                    {% for it in item.volume_credits[:6] %}
+                                    <a href="/detail/volume/{{ it.id }}" class="inline-flex items-center px-3 py-1 rounded-md bg-gray-200 text-gray-800 text-sm hover:bg-gray-300">{{ it.name or 'Volumen' }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if item.movie_credits %}
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2">Películas</div>
+                                <div class="flex flex-wrap gap-2">
+                                    {% for it in item.movie_credits[:6] %}
+                                    <a href="/detail/movie/{{ it.id }}" class="inline-flex items-center px-3 py-1 rounded-md bg-gray-200 text-gray-800 text-sm hover:bg-gray-300">{{ it.name or 'Película' }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if resource_type == 'issue' and item.character_credits %}
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Personajes</h3>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            {% for ch in item.character_credits[:20] %}
+                            <a href="/detail/character/{{ ch.id }}" class="inline-flex items-center px-3 py-1 rounded-md bg-gray-200 text-gray-800 text-sm hover:bg-gray-300">{{ ch.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if resource_type == 'movie' and item.characters %}
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Personajes</h3>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            {% for ch in item.characters[:20] %}
+                            <a href="/detail/character/{{ ch.id }}" class="inline-flex items-center px-3 py-1 rounded-md bg-gray-200 text-gray-800 text-sm hover:bg-gray-300">{{ ch.name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    
+
+                    {% if item.site_detail_url %}
+                    <a href="{{ item.site_detail_url }}" target="_blank" 
+                       class="inline-flex items-center gap-2 bg-white text-gray-900 border border-gray-900 font-bold py-3 px-8 rounded-lg hover:bg-gray-900 hover:text-white transition-colors mt-6">
+                        LEER MÁS EN COMIC VINE
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                        </svg>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

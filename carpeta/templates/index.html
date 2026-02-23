@@ -3,99 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comic Vine Explorer</title>
+    <title>Comic Movies</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦸‍♂️</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: #0f172a; 
-            color: #f8fafc;
+        body {
+            background-color: #ffffff;
+            color: #111827;
             font-family: 'Inter', sans-serif;
         }
-        .comic-title { 
-            font-family: 'Bangers', cursive; 
+        .comic-title {
+            font-family: 'Bangers', cursive;
             letter-spacing: 2px;
-            text-shadow: 3px 3px 0px #0369a1;
+            text-shadow: 2px 2px 0px #9CA3AF;
         }
         .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
         }
-        .character-image {
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,.06); }
+        
+        @keyframes superhero-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .whatif-btn {
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            background-size: 400% 400%;
+            animation: superhero-gradient 3s ease infinite;
+            color: white;
+            border: none;
         }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-8">
 
-    <div class="max-w-5xl mx-auto">
-        <header class="text-center mb-12">
-            <h1 class="text-6xl md:text-8xl comic-title text-sky-400 mb-4">COMIC FINDER</h1>
-            <p class="text-slate-400 text-lg uppercase tracking-widest">Base de datos de Superhéroes</p>
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8">
+            <div class="flex items-center justify-between">
+                <div class="text-center md:text-left">
+                    <a href="/" class="inline-block">
+                        <h1 class="text-5xl md:text-7xl comic-title text-gray-900 mb-1 cursor-pointer hover:opacity-80 transition-opacity">COMIC MOVIES</h1>
+                    </a>
+                </div>
+                <nav class="flex gap-3">
+                    <a href="/what-if" class="whatif-btn font-bold py-2 px-4 rounded-lg shadow">What If</a>
+                </nav>
+            </div>
         </header>
 
         <section class="mb-12">
             <form method="POST" class="flex flex-col md:flex-row gap-3 shadow-xl">
                 <input type="text" name="nombre" required
                        placeholder="Escribe un nombre (ej: Wolverine, Joker...)" 
-                       class="flex-1 p-4 rounded-xl bg-slate-800 border-2 border-slate-700 focus:border-sky-500 focus:outline-none text-white text-lg">
+                       class="flex-1 p-4 rounded-xl bg-white border-2 border-gray-300 focus:border-gray-900 focus:outline-none text-gray-900 text-lg">
                 <button type="submit" 
-                        class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 px-10 rounded-xl transition-all active:scale-95">
+                        class="bg-white text-gray-900 border border-gray-900 font-bold py-4 px-10 rounded-xl transition-all active:scale-95 hover:bg-gray-900 hover:text-white">
+            class="flex-1 p-4 rounded-xl bg-white border-2 border-gray-300 focus:border-gray-900 focus:outline-none text-gray-900 text-lg">
+        <button type="submit" 
+            class="bg-white text-gray-900 border border-gray-900 font-bold py-4 px-10 rounded-xl transition-all active:scale-95 hover:bg-gray-900 hover:text-white">
                     BUSCAR
                 </button>
             </form>
         </section>
 
-        {% if personaje %}
-        <main class="glass rounded-3xl overflow-hidden shadow-2xl animate-fade-in">
-            <div class="flex flex-col md:flex-row">
-                <div class="md:w-2/5 relative">
-                    <img src="{{ personaje.image.original_url }}" 
-                         alt="{{ personaje.name }}" 
-                         class="w-full h-full object-cover character-image">
-                </div>
-
-                <div class="md:w-3/5 p-8 md:p-12">
-                    <div class="mb-6">
-                        <h2 class="text-5xl comic-title text-sky-400 mb-2">{{ personaje.name }}</h2>
-                        {% if personaje.real_name %}
-                        <span class="bg-sky-900/50 text-sky-300 px-3 py-1 rounded-full text-sm font-bold border border-sky-700">
-                            ID REAL: {{ personaje.real_name }}
-                        </span>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="text-slate-300 text-lg leading-relaxed mb-8 prose prose-invert">
-                        {% if personaje.deck %}
-                            {{ personaje.deck|safe }}
-                        {% else %}
-                            <p class="italic text-slate-500">No hay una descripción breve disponible para este personaje en los archivos.</p>
-                        {% endif %}
-                    </div>
-
-                    <a href="{{ personaje.site_detail_url }}" target="_blank" 
-                       class="inline-flex items-center gap-2 bg-white text-slate-900 font-bold py-3 px-8 rounded-lg hover:bg-sky-400 hover:text-white transition-colors">
-                        LEER MÁS EN COMIC VINE
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </main>
-        {% elif error_msg %}
+        {% if error_msg %}
         <div class="bg-red-900/20 border border-red-500/50 text-red-200 p-6 rounded-2xl text-center">
             <p class="text-xl font-bold">¡Oops! {{ error_msg }}</p>
             <p class="text-sm opacity-70">Verifica que el nombre esté bien escrito o intenta con uno más común.</p>
         </div>
         {% endif %}
 
-        <footer class="mt-16 text-center text-slate-500 text-sm">
-            Powered by <a href="https://comicvine.gamespot.com/api/" class="text-sky-700 hover:underline">Comic Vine API</a>
+        {% if personajes %}
+        <section class="mt-12">
+            <h3 class="text-2xl font-bold mb-4">Personajes</h3>
+            <div id="grid-characters" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {% for item in personajes %}
+                <a href="/detail/character/{{ item.id }}" class="card block rounded-lg overflow-hidden">
+                    {% if item.image and item.image.medium_url %}
+                    <img src="{{ item.image.medium_url }}" alt="{{ item.name }}" class="w-full h-60 object-cover">
+                    {% else %}
+                    <div class="w-full h-60 bg-gray-200 flex items-center justify-center text-4xl">🦸‍♂️</div>
+                    {% endif %}
+                    <div class="p-3">
+                        <h4 class="text-base font-semibold">{{ item.name if item.name else 'Personaje sin nombre' }}</h4>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="mt-4 text-center">
+                <button id="btn-more-characters" class="bg-white text-gray-900 border border-gray-900 font-bold py-2 px-4 rounded hover:bg-gray-900 hover:text-white">Cargar más</button>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if comics_issues or comics_volumes %}
+        <section class="mt-12">
+            <h3 class="text-2xl font-bold mb-4">Cómics</h3>
+            <div id="grid-comics" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {% for item in comics_issues %}
+                <a href="/detail/issue/{{ item.id }}" class="card block rounded-lg overflow-hidden">
+                    {% if item.image and item.image.medium_url %}
+                    <img src="{{ item.image.medium_url }}" alt="{{ item.name }}" class="w-full h-60 object-cover">
+                    {% else %}
+                    <div class="w-full h-60 bg-gray-200 flex items-center justify-center text-4xl">📚</div>
+                    {% endif %}
+                    <div class="p-3">
+                        <h4 class="text-base font-semibold">{{ item.name if item.name else 'Cómic' }}</h4>
+                    </div>
+                </a>
+                {% endfor %}
+                {% for item in comics_volumes %}
+                <a href="/detail/volume/{{ item.id }}" class="card block rounded-lg overflow-hidden">
+                    {% if item.image and item.image.medium_url %}
+                    <img src="{{ item.image.medium_url }}" alt="{{ item.name }}" class="w-full h-60 object-cover">
+                    {% else %}
+                    <div class="w-full h-60 bg-gray-200 flex items-center justify-center text-4xl">📚</div>
+                    {% endif %}
+                    <div class="p-3">
+                        <h4 class="text-base font-semibold">{{ item.name if item.name else 'Serie sin título' }}</h4>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="mt-4 text-center">
+                <button id="btn-more-comics" class="bg-white text-gray-900 border border-gray-900 font-bold py-2 px-4 rounded hover:bg-gray-900 hover:text-white">Cargar más</button>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if peliculas %}
+        <section class="mt-12">
+            <h3 class="text-2xl font-bold mb-4">Películas</h3>
+            <div id="grid-movies" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {% for item in peliculas %}
+                <a href="/detail/movie/{{ item.id }}" class="card block rounded-lg overflow-hidden">
+                    {% if item.image and item.image.medium_url %}
+                    <img src="{{ item.image.medium_url }}" alt="{{ item.name }}" class="w-full h-60 object-cover">
+                    {% else %}
+                    <div class="w-full h-60 bg-gray-200 flex items-center justify-center text-4xl">🎥</div>
+                    {% endif %}
+                    <div class="p-3">
+                        <h4 class="text-base font-semibold">{{ item.name if item.name else 'Película sin título' }}</h4>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            <div class="mt-4 text-center">
+                <button id="btn-more-movies" class="bg-white text-gray-900 border border-gray-900 font-bold py-2 px-4 rounded hover:bg-gray-900 hover:text-white">Cargar más</button>
+            </div>
+        </section>
+        {% endif %}
+
+        <footer class="mt-16 text-center text-gray-500 text-sm">
+            Powered by <a href="https://comicvine.gamespot.com/api/" class="text-gray-700 hover:underline">Comic Vine API</a>
         </footer>
     </div>
 
+        <script>
+        const offsets = { characters: 0, comics: 0, movies: 0 };
+        const loadedIds = { characters: new Set(), comics: new Set(), movies: new Set() };
+        
+        // Cargar IDs iniciales de elementos ya mostrados
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('#grid-characters a').forEach(a => {
+                const id = a.href.match(/\/detail\/character\/(\d+)/)?.[1];
+                if (id) loadedIds.characters.add(id);
+            });
+            document.querySelectorAll('#grid-comics a').forEach(a => {
+                const id = a.href.match(/\/detail\/\w+\/(\d+)/)?.[1];
+                if (id) loadedIds.comics.add(id);
+            });
+            document.querySelectorAll('#grid-movies a').forEach(a => {
+                const id = a.href.match(/\/detail\/movie\/(\d+)/)?.[1];
+                if (id) loadedIds.movies.add(id);
+            });
+        });
+        
+        async function loadMore(resource) {
+            const res = await fetch(`/api/load-more/${resource}?offset=${offsets[resource]}`);
+            const data = await res.json();
+            const containerId = resource === 'characters' ? 'grid-characters' : resource === 'comics' ? 'grid-comics' : 'grid-movies';
+            const container = document.getElementById(containerId);
+            data.html.forEach(html => {
+                const div = document.createElement('div');
+                div.innerHTML = html.trim();
+                const el = div.firstElementChild;
+                
+                // Extraer ID del enlace
+                const idMatch = el.href.match(/\/detail\/\w+\/(\d+)/);
+                const itemId = idMatch ? idMatch[1] : null;
+                
+                // Solo agregar si no está duplicado
+                if (itemId && !loadedIds[resource].has(itemId)) {
+                    container.appendChild(el);
+                    loadedIds[resource].add(itemId);
+                }
+            });
+            offsets[resource] += 10;
+        }
+        const btnChars = document.getElementById('btn-more-characters');
+        if (btnChars) btnChars.addEventListener('click', () => loadMore('characters'));
+        const btnComics = document.getElementById('btn-more-comics');
+        if (btnComics) btnComics.addEventListener('click', () => loadMore('comics'));
+        const btnMovies = document.getElementById('btn-more-movies');
+        if (btnMovies) btnMovies.addEventListener('click', () => loadMore('movies'));
+        </script>
 </body>
 </html>
